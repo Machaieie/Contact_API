@@ -8,7 +8,7 @@ namespace Contacto.Repositorys.Interface
         Task<List<UsuarioModelo>> Listar();
         Task<UsuarioModelo> PegarComId(int id);
         Task<UsuarioModelo> Adicionar(UsuarioModelo usuario);
-        Task<UsuarioModelo> Remover(int id);
+        Task<bool> Remover(int id);
         Task<UsuarioModelo> Atualizar(UsuarioModelo usuario, int id);
     }
 }

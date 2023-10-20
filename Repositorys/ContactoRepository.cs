@@ -45,7 +45,7 @@ namespace Contacto.Repositorys
             return await _dataContext.contacto.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<ContactoModelo> Remover(int id)
+        public async Task<bool> Remover(int id)
         {
             ContactoModelo contacto = await PegarComId(id);
             if (contacto == null)

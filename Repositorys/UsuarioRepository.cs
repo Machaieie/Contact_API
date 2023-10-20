@@ -1,33 +1,61 @@
-﻿using Contacto.Model;
+﻿using Contacto.Data;
+using Contacto.Model;
 using Contacto.Repositorys.Interface;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Contracts;
 
 namespace Contacto.Repositorys
 {
     public class UsuarioRepository : IUsuario
     {
-        public Task<UsuarioModelo> Adicionar(UsuarioModelo usuario)
+        private readonly DataContext _dataContext;
+        public UsuarioRepository(DataContext dataContext)
         {
-            throw new NotImplementedException();
+            _dataContext = dataContext;
+        }
+        public async Task<UsuarioModelo> Adicionar(UsuarioModelo usuario)
+        {
+            await _dataContext.AddAsync(usuario);
+            await _dataContext.SaveChangesAsync();
+            return usuario;
         }
 
-        public Task<UsuarioModelo> Atualizar(UsuarioModelo usuario, int id)
+        public async Task<UsuarioModelo> Atualizar(UsuarioModelo usuario, int id)
         {
-            throw new NotImplementedException();
+            UsuarioModelo user = await PegarComId(id);
+            if (user == null)
+            {
+                throw new Exception($"Usuario com o id: {id} não encontrado");
+
+            }
+            user.Usuario = usuario.Usuario;
+            user.Senha = usuario.Senha;
+            _dataContext.usuario.Update(user);
+            await _dataContext.SaveChangesAsync();
+            return user;
         }
 
-        public Task<List<UsuarioModelo>> Listar()
+        public async Task<List<UsuarioModelo>> Listar()
         {
-            throw new NotImplementedException();
+            return await _dataContext.usuario.ToListAsync();
         }
 
-        public Task<UsuarioModelo> PegarComId(int id)
+        public async Task<UsuarioModelo> PegarComId(int id)
         {
-            throw new NotImplementedException();
+            return await _dataContext.usuario.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<UsuarioModelo> Remover(int id)
+        public async Task<bool> Remover(int id)
         {
-            throw new NotImplementedException();
+            UsuarioModelo user = await PegarComId(id);
+            if (user == null)
+            {
+                throw new Exception($"Usuario com o id: {id} não encontrado");
+
+            }
+            _dataContext.usuario.Remove(user);
+            await _dataContext.SaveChangesAsync();
+            return true;
         }
     }
 }
