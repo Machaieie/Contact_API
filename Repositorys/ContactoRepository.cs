@@ -1,33 +1,62 @@
-﻿using Contacto.Model;
+﻿using Contacto.Data;
+using Contacto.Model;
 using Contacto.Repositorys.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace Contacto.Repositorys
 {
     public class ContactoRepository : IContacto
     {
-        public Task<ContactoModelo> Adicionar(ContactoModelo contactoModelo)
+        private readonly DataContext _dataContext;
+        public ContactoRepository(DataContext dataContext) 
+        { 
+            _dataContext = dataContext;
+        }
+        public async Task<ContactoModelo> Adicionar(ContactoModelo contactoModelo)
         {
-            throw new NotImplementedException();
+            await _dataContext.AddAsync(contactoModelo);
+            await _dataContext.SaveChangesAsync();
+            return contactoModelo;
         }
 
-        public Task<ContactoModelo> Atualizar(ContactoModelo contactoModelo, int id)
+        public async Task<ContactoModelo> Atualizar(ContactoModelo contactoModelo, int id)
         {
-            throw new NotImplementedException();
+            ContactoModelo contacto = await PegarComId(id);
+            if(contacto == null) 
+            {
+                throw new Exception($"Contacto com o id: {id} não encontrado");
+
+            }
+            contacto.Nome = contactoModelo.Nome;
+            contacto.Email = contactoModelo.Email;
+            contacto.Contacto = contactoModelo.Contacto;
+            _dataContext.contacto.Update(contacto);
+            await _dataContext.SaveChangesAsync();
+            return contactoModelo;
         }
 
-        public Task<List<ContactoModelo>> Listar()
+        public async Task<List<ContactoModelo>> Listar()
         {
-            throw new NotImplementedException();
+            return await _dataContext.contacto.ToListAsync();
         }
 
-        public Task<ContactoModelo> PegarComId(int id)
+        public async Task<ContactoModelo> PegarComId(int id)
         {
-            throw new NotImplementedException();
+            return await _dataContext.contacto.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<ContactoModelo> Remover(int id)
+        public async Task<ContactoModelo> Remover(int id)
         {
-            throw new NotImplementedException();
+            ContactoModelo contacto = await PegarComId(id);
+            if (contacto == null)
+            {
+                throw new Exception($"Contacto com o id: {id} não encontrado");
+
+            }
+
+            _dataContext.contacto.Remove(contacto);
+            await _dataContext.SaveChangesAsync();
+            return true;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Contacto.Repositorys.Interface
         Task<List<ContactoModelo>> Listar();
         Task<ContactoModelo> PegarComId(int id);
         Task<ContactoModelo> Adicionar(ContactoModelo contactoModelo);
-        Task<ContactoModelo> Remover( int id);
+        Task<bool> Remover( int id);
         Task<ContactoModelo> Atualizar(ContactoModelo contactoModelo, int id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Contacto.Repositorys.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Contacto.Controllers
@@ -7,6 +8,10 @@ namespace Contacto.Controllers
     [ApiController]
     public class ContactoController : ControllerBase
     {
-        public ContactoController() { }
+        private readonly IContacto _contacto;
+        public ContactoController(IContacto contacto ) 
+        { 
+            _contacto = contacto;
+        }
     }
 }
